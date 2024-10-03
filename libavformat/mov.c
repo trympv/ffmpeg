@@ -7921,10 +7921,21 @@ static int cenc_scheme_decrypt(MOVContext *c, MOVStreamContext *sc, AVEncryption
             return AVERROR(ENOMEM);
         }
 
+        /* Ensure the decryption key is securely initialized */
+        if (c->decryption_key == NULL || c->decryption_key_len <= 0) {
+            av_log(c->fc, AV_LOG_ERROR, "Decryption key is not set\n");
+            return AVERROR_INVALIDDATA;
+        }
+
         ret = av_aes_ctr_init(sc->cenc.aes_ctr, c->decryption_key);
         if (ret < 0) {
             return ret;
         }
+
+        /* Optionally clear decryption key from memory after use */
+        // sodium_munlock(c->decryption_key, c->decryption_key_len);
+        // sodium_free(c->decryption_key);
+        // c->decryption_key = NULL;
     }
 
     av_aes_ctr_set_full_iv(sc->cenc.aes_ctr, sample->iv);
@@ -7946,7 +7957,6 @@ static int cenc_scheme_decrypt(MOVContext *c, MOVStreamContext *sc, AVEncryption
         size -= sample->subsamples[i].bytes_of_clear_data;
 
         /* decrypt the encrypted bytes */
-
         bytes_of_protected_data = sample->subsamples[i].bytes_of_protected_data;
         av_aes_ctr_crypt(sc->cenc.aes_ctr, input, input, bytes_of_protected_data);
 
@@ -7961,6 +7971,7 @@ static int cenc_scheme_decrypt(MOVContext *c, MOVStreamContext *sc, AVEncryption
 
     return 0;
 }
+
 
 static int cbc1_scheme_decrypt(MOVContext *c, MOVStreamContext *sc, AVEncryptionInfo *sample, uint8_t *input, int size)
 {
