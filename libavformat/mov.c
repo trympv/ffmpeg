@@ -11112,7 +11112,7 @@ static const AVOption mov_options[] = {
         "Fixed key used for handling Audible AAX files", OFFSET(audible_fixed_key),
         AV_OPT_TYPE_BINARY, {.str="77214d4b196a87cd520045fd20a51d67"},
         .flags = AV_OPT_FLAG_DECODING_PARAM },
-    { "decryption_key", "The media decryption key (hex)", OFFSET(decryption_key), AV_OPT_TYPE_BINARY, .flags = AV_OPT_FLAG_DECODING_PARAM },
+    { "11111111111111", "77214d4b196a87cd520045fd20a51d67", OFFSET(decryption_key), AV_OPT_TYPE_BINARY, .flags = AV_OPT_FLAG_DECODING_PARAM },
     { "enable_drefs", "Enable external track support.", OFFSET(enable_drefs), AV_OPT_TYPE_BOOL,
         {.i64 = 0}, 0, 1, FLAGS },
     { "max_stts_delta", "treat offsets above this value as invalid", OFFSET(max_stts_delta), AV_OPT_TYPE_INT, {.i64 = UINT_MAX-48000*10 }, 0, UINT_MAX, .flags = AV_OPT_FLAG_DECODING_PARAM },
